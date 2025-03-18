@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create</title>
+    <link rel="stylesheet" href="create_lc.css">
+</head>
+
+<body style="background-color:#242222">
+    <div class="topnav" id="myTopnav">
+        <a href="meeting_the_brief.html">Meeting the brief</a>
+        <a href="investigation_lc.html">Investigation</a>
+        <a href="plan_and_design.html">Plan and design</a>
+        <a href="create.html">Create</a>
+        <a href="evaluation.html">Evaluation</a>
+
+    </div>
+
+    <h1 style="color:white;">Create</h1>
+
+    <img src="create.PNG" alt="create1">
+    <br>
+    <p style="color:white;">In week 1, I started by reading the raw data and checking the all columns have the correct title. During this
+        project the hardest part was cleaning the data. First problem that I was faced with was country names were
+        containing invalid text (ex. /, @, !, $, etc.). I wrote a variable with a name of placeholder and then replace
+        the invalid characters by valid characters. It took me a long time to figure out what to do. The second problem
+        I was faced with was cleaning the years. There was unnecessary information and I needed only a specific one.
+        Again I wrote a variable with the name of placeholder and select that column. Then I selected the information
+        that I didn’t need and delete them. I stored the clean data in ”clean_data” file. So I finished week 2 like
+        that. </p>
+    <br>
+
+    <p style="color:white;">In week 3, I needed to send the clean data to firebase and store the information in there. Then I checked if the
+        information that has been sent was correct or not.</p>
+
+    <br>
+    <p style="color:white;">Week 4, was about calculations. In this week I calculated the average magnitude in a new file called
+        “analyse_graph_data”. By writing a function and a for loop, it was easier to identify the code. Then I printed
+        the country and the info to see if it was the correct information. </p>
+
+    <br>
+    <p style="color:white;">In week 5, I did the same thing with average depth and then printed the country and info to see if it was
+        correct. I printed a specific country so it is easier to calculate the correct average. Then I did
+        recommendations on the same file so I can get the information from firebase and easily use it in my JavaScript
+        code. First I did experienced earthquakes and it went well. But in the second one which is strongest earthquake,
+        I couldn’t do it on the same file because it needed the original file. So I needed to do it on the same file as
+        my cleaning code goes. I tried in there and it worked well. Then I send the information to firebase.</p>
+
+    <br>
+
+    <p style="color:white;">In week 6, because I send the information to firebase I was able to easily take the information and do the same
+        graphs on JavaScript. </p>
+
+    <br>
+
+    <p style="color:white;">In week 7, I did a choosing box where user can select the countries and then the graph responds to it and changes
+        the graph for that country. For this I needed to write a function in JavaScript called “populate_countries” so
+        that there will be a dropdown menu where they can select the country. I got the countries names from firebase
+        and carry it to the code that I have written.</p>
+    <br>
+    <p style="color:white;">In week 8, after I checked the information that has been sent to firebase is correct, I started on my survey. I
+        write all the needed information into the survey including users first and last name so that when it is sent to
+        firebase it will have a specific ID. That’s why in week 9, I made a submit button so that the information that
+        they have entered can be sent to firebase. I also needed to display an information for user rom the data that
+        they have entered, so I decided to make a graph about how many people have experienced earthquake. It is a graph
+        that show how many people have said yes or no to the question. Then I put the average people that have
+        experienced earthquake at the bottom with a text</p>
+    <br>
+    <img src="test_table_fname.PNG" alt="test_table_fname" width="500" height="300">
+    <img src="test_table_lname.PNG" alt="test_table_lname" width="500" height="300">
+
+    <p style="color:white;">In week 10, I started on my recommendations. In here I used “populate_countries” again to make a dropdown list
+        that contains all the countries. Then I changed the sample answer to the information that I want to display for
+        that country. I did the same for my second recommendation but created a function called “populate_years”. It had
+        the same idea but rather than countries, I created a dropdown list contains each year. </p>
+    <br>
+    <p style="color:white;">In week 11, it was time to style the webpage. I made the background black and made graphs colourful so that it
+        will pop up on the background better. I made a navigation bar to switch between survey and the main page so it
+        will look better. In my survey I made my graph colourful too so the user can understand and see the graph
+        better.</p>
+
+    <br>
+    <p style="color:white;">In week 12, I started on my report and designed it so it will look better. After I finished the video too my
+        project was successfully finished and was ready.</p>
+
+
+
+    
+
+
+
+</body>
+
+</html>

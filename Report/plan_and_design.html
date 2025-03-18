@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan and design</title>
+    <link rel="stylesheet" href="plan_and_design.css">
+</head>
+
+
+<body style="background-color:#242222">
+    <div class="topnav" id="myTopnav">
+        <a href="meeting_the_brief.html">Meeting the brief</a>
+        <a href="investigation_lc.html">Investigation</a>
+        <a href="plan_and_design.html">Plan and design</a>
+        <a href="create.html">Create</a>
+        <a href="evaluation.html">Evaluation</a>
+
+    </div>
+
+    <h1 style="color:white;">Plan and Design</h1>
+
+    <p style="color:white;">In my website I wanted to give the user a platform where they can easily learn information. For this first I
+        needed to find a dataset that interests me and user. That's how I came up with the idea of the earthquakes in
+        the world. I started to do my project with python and pandas. I cleaned the dataset with pandas by dropping
+        unnecessary columns, removing invalid characters from country names and deleting the unnecessary information
+        (ex. 1990-01-01 00:22:33.990000+00:00  1999). Then send it to Firebase so it will be stored in there. After I
+        cleaned the dataset, I created a new excel file called 'clean_data_year_test.csv'.</p>
+
+    <img src="clean1.png" alt="clean1" width="400" height="300">
+
+    <br>
+    <p style="color:white;">I got information from clean csv file and did graphs for average magnitude and average depth. By creating a
+        dictionary called `average magnitude`, I calculated it in a function and for loop. Just to make sure I printed
+        one country in Thonny. After I did the same thing with `average depth`, I started on recommendations that will
+        be on my website.</p>
+
+    <img src="average_magnitude_code.png" alt="average_magnitude_code" width="500" height="400">
+    <img src="average_depth_code.png" alt="average_depth_code" width="500" height="300">
+
+    <br>
+
+    <p style="color:white;">The first one was experienced_earthquakes. For that I did a function and wrote a for loop so
+        it will count the experienced earthquakes in each country. The second one was strongest_earthquake. There is two
+        code for this. The first code which didn't worked was in `analysed graph data`. I tried to get the strongest
+        earthquake magnitude and country in that year. Although it didn't worked. Then I did it on my cleaning file so
+        the magnitudes will reset. The second one worked better so I send both recommendations to firebase. I also sent
+        average magnitude and average depth calculations on firebase too. </p>
+
+    <img src="experienced_earthquakes_code.png" alt="experienced_earthquakes_code" width="500" height="300">
+
+    <div class="image-container">
+        <img src="strongest_earthquake_failed_code.png" alt="strongest_earthquake_failed_code">
+        <div class="hover-text">This is the failed code!!</div>
+    </div>
+
+    <br>
+    <img src="strongest_earthquake1.png" alt="strongest_earthquake1" width="700" height="300">
+    <br>
+    <img src="strongest_earthquake2.png" alt="strongest_earthquake2" width="1200" height="300">
+    <br>
+    <img src="strongest_earthquake3.png" alt="strongest_earthquake3" width="1200" height="300">
+    <br>
+    <p style="color:white;">After I did my graphs in python I skipped to JavaScript. I did my graphs on JavaScript too and started to design
+        my website with JS, HTML and CSS on Visual Studio Code. </p>
+    <br>
+    <p style="color:white;">For my website, I did a navigation bar where users can switch between survey and the main page. I wanted to make
+        it a dark background since it is a dark topic in my opinion. Although I made the graph bars colourful, so it
+        will appear better on the background. At the bottom I put my recommendations</p>
+    <img src="wireframe_webpage.PNG" alt=" pic1">
+
+    <p style="color:white;">In my survey, after I made a form I did a colourful graph where it displays the information about user and gives
+        them feedback. With that I made my website more functional and better for user.</p>
+    <img src="wireframe_survey.PNG" alt=" pic2">
+
+
+
+
+    <p style="color:white;">Architecture diagram</p>
+    <img src="architecture diagram lc (1).jpg" alt="architecture_diagram_1">
+    <br>
+    <p style="color:white;">Plan and design flowchart</p>
+    <img src="plan and design of website 1.jpg" alt="plan_and_design_pic_1">
+    <br>
+    <img src="plan and design of website 2.jpg" alt="plan_and_design_pic_2">
+    <br>
+    <img src="plan and design of website 3.jpg" alt="plan_and_design_pic_3">
+    <br>
+    <img src="plan and design of website 4.jpg" alt="plan_and_design_pic_4">
+    <br>
+    <img src="plan and design of website 5.jpg" alt="plan_and_design_pic_5">
+    <br>
+    <img src="plan and design of website 6.jpg" alt="plan_and_design_pic_6">
+    <br>
+    <img src="plan and design of website 7.jpg" alt="plan_and_design_pic_7">
+    <br>
+    <img src="plan and design of website 8.jpg" alt="plan_and_design_pic_8">
+    <br>
+    
+
+
+
+</body>
+
+</html>
