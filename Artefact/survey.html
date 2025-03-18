@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>survey</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <link rel="stylesheet" href="survey_lc.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <a href="webpage_lc.html">Main Page</a>
+        <a href="survey.html">Survey</a>
+    </div>
+
+    <h2 style="color:white;">Give us a quick information about you!</h2>
+
+    <form id="user_survey">
+        <div id="form-control">
+            <label for="fname">First name;</label>
+            <input type="text" id="fname" name="fname" placeholder="name" required>
+        </div>
+        <br>
+
+        <div id="form-control">
+            <label for="lname">Last name;</label>
+            <input type="text" id="lname" name="lname" placeholder="last name" required>
+        </div>
+        <br>
+        <div id="form-control">
+
+            <label for="bdate">Birthdate:</label>
+            <input type="date" id="bdate" name="bdate">
+
+        </div>
+
+        <br>
+        <div id="form-control">
+            <label for="title">Title:</label>
+
+
+            <label for="mr.">Mr.</label>
+            <input type="radio" id="mr." name="title" value="mr." checked="checked">
+
+            <label for="mrs.">Mrs.</label>
+            <input type="radio" id="mrs." name="title" value="mrs.">
+
+            <label for="ms.">Ms</label>
+            <input type="radio" id="ms." name="title" value="ms.">
+
+            <br>
+
+
+            <div id="number_of_earthquakes">
+
+                <label for="yes_no_radio">Experienced earthquakes before?:</label>
+
+                <label for="yes">Yes</label>
+                <input type="radio" id="yes" name="yes" value="yes" onclick="earthquake_listener(this)"
+                    checked="checked">
+
+
+                <label for="no">No</label>
+                <input type="radio" id="no" name="yes" value="no" onclick="earthquake_listener(this)">
+
+            </div>
+            <br>
+
+            <div id="earthquake_input" style="display:block">
+
+                <label for="quantity">How many?:</label>
+                <input type="number" id="quantity" name="quantity" min="0" max="99" value="0">
+
+            </div>
+
+            <br>
+
+
+            <div>
+                <input type="submit" value="submit">
+            </div>
+        </div>
+    </form>
+
+    <button id="survey_result" style="color:white;">View the survey results</button>
+    <canvas id="survey_graph">
+
+
+    </canvas>
+    <p id='replace-me' style="color:white;"></p>
+
+
+    <script type="module">
+
+        setInterval(function () {
+
+
+
+        }, 1000);
+        let colors_list = ['rgba(255, 96, 172, 0.57)',
+            'rgba(354, 139, 64, 0.57)',
+            'rgba(264, 205, 87, 0.57)',
+            'rgba(76, 162, 192, 0.57)',
+            'rgba(76, 162, 245, 0.57)',
+            'rgba(154, 182, 255, 0.57)']
+
+
+
+        function survey_result_button(event) {
+            event.preventDefault()
+            get(child(firebaseRef, '/survey')).then((snapshot) => {
+                // if (snapshot.exists()) {
+                //     console.log(snapshot.val());
+                // }
+                let number_of_yes = 0
+                let number_of_no = 0
+                for (let [key, value] of Object.entries(snapshot.val())) {
+                    console.log(key, '---->', value)
+                    for (let [a, b] of Object.entries(value)) {
+                        console.log("im here")
+                        if (a == "Experienced Earthquake") {
+                            if (b == "yes") {
+                                number_of_yes = number_of_yes + 1
+                            }
+                            else {
+                                number_of_no = number_of_no + 1
+                            }
+
+                        }
+
+                    }
+                }
+                console.log(number_of_yes)
+                console.log(number_of_no)
+                survey_graph([number_of_yes, number_of_no])
+                average_earthquake(number_of_yes)
+            })
+
+        }
+
+        function survey_graph(y) {
+
+
+            let survey_chart = new Chart(document.getElementById("survey_graph"), {
+
+                type: "pie",
+                data: {
+                    labels: ["yes", "no"],
+                    datasets: [{
+                        backgroundColor: ["rgba(105, 191, 121)", "rgba(199, 89, 78)"],
+
+
+                        data: y
+                    }]
+                },
+                options: {
+                    legend: {
+                        display: false
+                    },
+
+                    title: {
+                        display: true,
+                        text: 'How many people have experienced earthquake?'
+                    }
+
+                }
+
+
+            })
+
+
+
+        }
+
+        function average_earthquake(yes_count) {
+
+            let sum_of_earthquakes = 0
+            let count = 0
+
+            get(child(firebaseRef, '/survey')).then((snapshot) => {
+                for (let [key, value] of Object.entries(snapshot.val())) {
+                    console.log(key, '---->', value)
+                    for (let [a, b] of Object.entries(value)) {
+                        console.log("im here")
+
+
+                        if (a == "Earthquake quantity") {
+                            let cb = parseInt(b)
+                            sum_of_earthquakes += cb
+
+
+                        }
+
+                    }
+                }
+
+                if (yes_count > 0) {
+
+                    let result = sum_of_earthquakes / yes_count
+                    console.log("Average number of earthquakes people have experienced: %", result)
+                    document.getElementById('replace-me').innerText = `Average number of earthquakes people have experienced: ${result.toFixed(2)}`;
+
+                }
+            })
+
+
+        }
+        function earthquake_listener(user_choice) {
+            if (user_choice.value == "yes") {
+                document.getElementById("earthquake_input").style.display = "block"
+
+
+            }
+            else {
+                document.getElementById("earthquake_input").style.display = "none"
+            }
+
+
+
+        }
+        window.earthquake_listener = earthquake_listener
+
+        // function reset_button() {
+        //     window.location = "survey.html";
+        //     return true;
+        // }
+
+
+        // function yes_question() {
+
+
+        // }
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLmuNV7oQt1bYBbLsgmaraBtSeq_T1bcw",
+            authDomain: "leaving-cert-project-test.firebaseapp.com",
+            databaseURL: "https://leaving-cert-project-test-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "leaving-cert-project-test",
+            storageBucket: "leaving-cert-project-test.firebasestorage.app",
+            messagingSenderId: "335460257589",
+            appId: "1:335460257589:web:b1470fc7596cbcb892467c"
+        };
+        const app = initializeApp(firebaseConfig);
+
+        import { getDatabase, ref, set, get, push, update, child, query, orderByChild } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+        const database = getDatabase(); //This creates a firebase instance
+        // let link_to_database_root = ref(database); //This creates a reference (link) to the root of your database
+        //This will create a reference to whatever address comes after the comma
+        const firebaseRef = ref(database);
+
+
+
+
+
+
+
+        function addDataToChart() {
+            // const q = query(ref(database, 'Books/'), orderByChild('Author'), equalTo('lkjtkhjkj'))
+            // get(q).then(snapshot => {
+            //     console.log(snapshot.val())
+            //     // These two lines turn our snapshot into a dictionary
+            //     let data = JSON.stringify(snapshot.val())
+            //    // let JSObjectData = JSON.parse(data)
+            //     console.log(typeof(data));
+            //   //  console.log(Object.values(JSObjectData))
+            // });
+
+            get(child(firebaseRef, '/')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+                    prices = []
+                    // These two lines turn our snapshot into a dictionary
+                    let data = JSON.stringify(snapshot.val());
+                    //console.log(data);
+                    let JSObjectData = JSON.parse(data)
+                    //let JSObjectData = snapshot.val()
+                    console.log(JSObjectData);
+                    console.log(Object.keys(JSObjectData))
+                    for (let [key, value] of Object.entries(JSObjectData)) { //returns the key value pairs books and posts
+                        //  console.log('This is', key, '---------------', value);
+                        if (key == 'Books') {
+                            for (let [innerkey, innervalue] of Object.entries(value)) { // returns books 1, 2 etc
+                                //    console.log(innerkey, '---------------', innervalue);
+                                for (let [innermostkey, innermostvalue] of Object.entries(innervalue)) {
+                                    console.log(innermostkey, '---------------', innermostvalue);
+                                    if (innermostkey == 'Price') {
+                                        prices.push(innermostvalue);
+                                        console.log(prices);
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // console.log(myChart.data.datasets)
+                    let ds = {
+                        label: 'label2',
+                        backgroundColor: '#ff0000',
+                        data: prices,
+                        id: 'ds1'
+                    }
+                    myChart.data.datasets.push(ds);
+                    myChart.update();
+                    console.log(myChart.data.datasets)
+
+
+
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
+        let user_input = document.getElementById("user_survey")
+        let survey_input = document.getElementById("survey_result")
+        // let number_of_earthquake_listener=document.number_of_earthquakes.yes
+        // console.log(number_of_earthquake_listener)
+
+        survey_input.addEventListener("click", survey_result_button)
+        user_input.addEventListener("submit", user_survey_function)
+
+
+        function user_survey_function(event) {
+            event.preventDefault()
+            let user_fname = document.getElementById("fname")
+            let user_lname = document.getElementById("lname")
+            let user_bdate = document.getElementById("bdate")
+            let user_quantity = document.getElementById("quantity")
+
+            let user_title = document.querySelector("input[name=title]:checked").value;
+
+            let user_yes_no_radio = document.querySelector("input[name=yes]:checked").value;
+
+            var Regex = /^[ a-zA-Z]*$/;
+            let submit_form = true
+            if (!Regex.test(user_fname.value)) {
+                
+            
+                alert("name must only contain letters")
+                submit_form = false
+            }
+            if (!Regex.test(user_lname.value)) {
+            
+            
+                alert("name must only contain letters")
+                submit_form = false
+            }
+            if (!user_bdate.value) {
+                alert("please enter a date")
+                submit_form = false
+                
+            }
+
+
+
+            // alert(user_fname.value)
+            // alert(user_lname.value)
+            // alert(user_bdate.value)
+            // alert(user_quantity.value)
+
+
+            //alert(user_title.value)
+
+            // let user_mrs=document.getElementById("mrs.")
+            // let user_ms=document.getElementById("ms.")
+
+            //alert(user_yes_no_radio.value)
+
+            // let user_choice_yes=document.getElementById("yes")
+            // let user_choice_no=document.getElementById("no")
+            let user_earthquake_quantity = document.getElementById("quantity")
+
+            const firebaseRef = ref(database, '/survey');
+            let survey_dic = { "First name": user_fname.value, "Last name": user_lname.value, "Birthday": user_bdate.value, "Earthquake quantity": user_quantity.value, "Title": user_title, 'Experienced Earthquake': user_yes_no_radio }
+            user_quantity.value = 0
+            if (submit_form == true) {
+                push(firebaseRef, survey_dic)
+
+            }
+
+
+        }
+    </script>
+</body>
+
+</html>

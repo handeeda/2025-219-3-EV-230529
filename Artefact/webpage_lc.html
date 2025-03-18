@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="webpage_lc.css">
+    <title>Graphquake</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <a href="webpage_lc.html">Main Page</a>
+        <a href="survey.html">Survey</a>
+    </div>
+
+    <h1 style="color:white;">Welcome To Graphquake!!</h1>
+    <p style="color:white;">In this website you can learn informations about earthquakes and interact with
+        graphs.<br>There is average
+        magnitude and average depth graphs. Also there are some recommendations for you if you want to get specific
+        information!</p>
+
+
+
+    <label for="countries_depth" style="color:white;">Please choose a country:</label>
+    <select name="countries_depth" id="countries_depth">
+
+
+
+    </select>
+    <canvas id="average_depth" style="width:100%;max-width:700px"></canvas>
+
+    <label for="countries_magnitudes" style="color:white;">Please choose a country:</label>
+
+    <select name="countries_magnitudes" id="countries_magnitudes">
+      
+
+
+    </select>
+    <canvas id="average_magnitude" style="width:100%;max-width:700px"></canvas>
+
+    <div class="select_for_graphs"></div>
+    <h2 style="color:white;">Recommendations</h2>
+
+    <p style="color:white;">Use the dropdown list below to check the frequency of earthquakes in your country of
+        interest:</p>
+
+    <label for="earthquake_frequencies" style="color:white;">Please choose a country:</label>
+    <select name="earthquake_frequencies" id="earthquake_frequencies">
+
+    </select>
+    <p id="earthquake_frequencies_paragraph" style="color:white;">Sample answer: Alsaka has experience x earthquakes
+        over the period 2000 -
+        2024. This averages out at x
+        earthquakes per year</p>
+
+    <label for="strongest_earthquake" style="color:white;">Please choose a year:</label>
+    <select name="strongest_earthquake" id="strongest_earthquake">
+
+    </select>
+    <p id="strongest_earthquake_paragraph" style="color:white;"> Sample answer: In "year", "country" had the strongest
+        earthquake. It had a
+        magnitude of "x"</p>
+
+
+
+    <script type="module">
+
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLmuNV7oQt1bYBbLsgmaraBtSeq_T1bcw",
+            authDomain: "leaving-cert-project-test.firebaseapp.com",
+            databaseURL: "https://leaving-cert-project-test-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "leaving-cert-project-test",
+            storageBucket: "leaving-cert-project-test.firebasestorage.app",
+            messagingSenderId: "335460257589",
+            appId: "1:335460257589:web:b1470fc7596cbcb892467c"
+        };
+
+        let colors_list = ['rgba(255, 96, 172, 0.57)',
+            'rgba(354, 139, 64, 0.57)',
+            'rgba(264, 205, 87, 0.57)',
+            'rgba(76, 162, 192, 0.57)',
+            'rgba(76, 162, 245, 0.57)',
+            'rgba(154, 182, 255, 0.57)']
+
+        // let boarder_colors_list = [
+        //     'rgb(257, 99, 132)',
+        //     'rgb(254, 159, 64)',
+        //     'rgb(236, 205, 86)',
+        //     'rgb(74, 192, 192)',
+        //     'rgb(54, 182, 235)',
+        //     'rgb(193, 502, 255)']
+
+        let selector_depth = document.getElementById("countries_depth");
+
+        selector_depth.addEventListener("change", () => {
+            let xValues = Object.keys(depth_dic[selector_depth.value])
+            let yValues = Object.values(depth_dic[selector_depth.value])
+            draw_chart("average_depth", xValues, yValues)
+            console.log(selector_depth.value);
+            console.log(depth_dic)
+
+        });
+
+        let selector_magnitude = document.getElementById("countries_magnitudes");
+
+        selector_magnitude.addEventListener("change", () => {
+            let xValues = Object.keys(magnitude_dic[selector_magnitude.value])
+            let yValues = Object.values(magnitude_dic[selector_magnitude.value])
+            draw_chart("average_magnitude", xValues, yValues)
+            console.log(selector_magnitude.value);
+            console.log(magnitude_dic)
+
+        });
+
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        import { getDatabase, ref, set, get, update, child, query, orderByChild } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+        const database = getDatabase(); //This creates a firebase instance
+        // let link_to_database_root = ref(database); //This creates a reference (link) to the root of your database
+        //This will create a reference to whatever address comes after the comma
+        const firebaseRef = ref(database);
+        let select_country = 'California'
+        let depth_dic = {}
+        let magnitude_dic = {}
+        let chart_data = null;
+        let list_of_countries = []
+        let list_of_years = []
+
+        //gets average depth from firebase and displays the graph and the selector
+        get(child(firebaseRef, '/average depth')).then((snapshot) => {
+            if (snapshot.exists()) {
+                depth_dic = JSON.parse(JSON.stringify(snapshot.val()))
+                list_of_countries = Object.keys(snapshot.val())
+                console.log(snapshot.val()[select_country]);
+                let xValues = Object.keys(snapshot.val()[select_country])
+                let yValues = Object.values(snapshot.val()[select_country])
+                draw_chart("average_depth", xValues, yValues)
+                populate_countries(list_of_countries, "countries_depth")
+            }
+        })
+
+        //gets average magnitude from firebase and displays the graph and the selector
+        get(child(firebaseRef, '/average magnitude')).then((snapshot) => {
+            if (snapshot.exists()) {
+                console.log(snapshot.val()[select_country]);
+                magnitude_dic = JSON.parse(JSON.stringify(snapshot.val()))
+                let xValues = Object.keys(snapshot.val()[select_country])
+                let yValues = Object.values(snapshot.val()[select_country])
+                draw_chart("average_magnitude", xValues, yValues)
+                populate_countries(list_of_countries, "countries_magnitudes")
+            }
+        })
+        //country dropdown list
+        function populate_countries(list_countries, canvas_identifier) {
+            for (let i = 0; i < list_countries.length; i++) {
+                const z = document.createElement("option");
+                z.setAttribute("value", list_countries[i]);
+                if (list_countries[i] == 'California'){
+                    // alert('California')
+                    z.setAttribute("selected","selected");
+                }
+                const t = document.createTextNode(list_countries[i]);
+                z.appendChild(t);
+                document.getElementById(canvas_identifier).appendChild(z);
+           }
+        }
+        let startYear = 1990
+        let endYear = 2023
+        function populate_years(list_years, canvas_identifier) {
+            for (let i = startYear; i < endYear + 1; i++) {
+                const z = document.createElement("option");
+                z.setAttribute("value", i);
+                const t = document.createTextNode(i);
+                z.appendChild(t);
+                document.getElementById(canvas_identifier).appendChild(z);
+
+
+
+            }
+        }
+        // //year dropdown list
+        // function populate_years(list_years, canvas_identifier) {
+        //     for (let i = 0; i < list_years.length; i++) {
+        //         const z = document.createElement("option");
+        //         z.setAttribute("value", list_years[i]);
+        //         const t = document.createTextNode(list_years[i]);
+        //         z.appendChild(t);
+        //         document.getElementById(canvas_identifier).appendChild(z);
+
+
+
+        //     }
+        // }
+
+        /////////////////////////
+
+
+        /////////////////////////////////
+        //magnitude and depth chart
+        let magnitude_chart = null
+        let depth_chart = null
+        function draw_chart(w, x, y) {
+            let backgroundColors = []
+            for (let i = 0; i < x.length; i++) {
+                backgroundColors.push(colors_list[i % colors_list.length]);
+            }
+            let currentCanvas = document.getElementById(w)
+
+            if (w == "average_depth") {
+                let backgroundColors = []
+                for (let i = 0; i < x.length; i++) {
+                    backgroundColors.push(colors_list[i % colors_list.length]);
+                }
+                if (depth_chart) {
+                    depth_chart.destroy()
+                }
+                depth_chart = new Chart(w, {
+                    type: "bar",
+                    data: {
+                        labels: x,
+                        datasets: [{
+                            backgroundColor: backgroundColors,
+                            data: y
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        title: { display: true, text: 'WinRate By Driver' },
+                        scales: {
+                            yAxes: [{
+                                ticks: { beginAtZero: true }, scaleLabel: {
+                                    display: true,
+                                    labelString: 'Depth for each country'
+                                }
+                            }], xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Years for each country'
+                                }
+                            }],
+                        },
+
+
+
+                        title: {
+                            display: true,
+                            text: 'Average Depth'
+                        }
+
+                    }
+
+
+                })
+
+            }
+            else if (w == "average_magnitude") {
+                if (magnitude_chart) {
+                    magnitude_chart.destroy()
+                }
+                let backgroundColors = []
+                for (let i = 0; i < x.length; i++) {
+                    backgroundColors.push(colors_list[i % colors_list.length]);
+                }
+                magnitude_chart = new Chart(w, {
+                    type: "bar",
+                    data: {
+                        labels: x,
+                        datasets: [{
+                            backgroundColor: backgroundColors,
+
+
+
+                            data: y
+                        }]
+                    },
+                    options: {
+                        legend: {
+                            display: false
+                        },
+                        title: { display: true, text: 'WinRate By Driver' },
+                        scales: {
+                            yAxes: [{
+                                ticks: { beginAtZero: true }, scaleLabel: {
+                                    display: true,
+                                    labelString: 'Magnitude for each country'
+                                }
+                            }], xAxes: [{
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'Years for each country'
+                                }
+                            }],
+                        },
+
+                        title: {
+                            display: true,
+                            text: 'Average Magnitude'
+                        }
+
+                    }
+
+                })
+            }
+
+
+        }
+        function recommendation_earthquake_frequencies() {
+            get(child(firebaseRef, '/number_of_experienced_earthquakes')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+
+                    populate_countries(list_of_countries, "earthquake_frequencies")
+
+                }
+            })
+        }
+
+
+
+
+        function recommendation_strongest_earthquake() {
+            get(child(firebaseRef, '/strongest_earthquake_by_year')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log(snapshot.val());
+
+                    populate_years(list_of_years, "strongest_earthquake")
+
+                }
+            })
+        }
+
+        recommendation_earthquake_frequencies()
+        recommendation_strongest_earthquake()
+
+        let selector_countries_frequencies = document.getElementById("earthquake_frequencies");
+        // function get_recommendation_earthquake_frequencies(select_countries) {
+        // get(child(firebaseRef, '/number_of_experienced_earthquakes')).then((snapshot) => {
+
+
+        selector_countries_frequencies.addEventListener("change", () => {
+            get(child(firebaseRef, '/number_of_experienced_earthquakes')).then((snapshot) => {
+                //alert(selector_countries_frequencies.value)
+                if (snapshot.val()[selector_countries_frequencies.value] < 24) {
+                    document.getElementById("earthquake_frequencies_paragraph").innerHTML = `${selector_countries_frequencies.value} has experience ${snapshot.val()[selector_countries_frequencies.value]} earthquakes over the period 1990 - 2023. This averages out at 
+                    less than 1 earthquake per year`
+
+                }
+                else {
+                    document.getElementById("earthquake_frequencies_paragraph").innerHTML = `${selector_countries_frequencies.value} has experience ${snapshot.val()[selector_countries_frequencies.value]} earthquakes over the period 1990 - 2023. This averages out at ${(Math.round(snapshot.val()[selector_countries_frequencies.value] / 24 * 100) / 100)}
+        earthquakes per year`
+                }
+
+
+
+            });
+
+        })
+
+        let selector_years_strongest_earthquake = document.getElementById("strongest_earthquake");
+        // let selector_years = document.getElementById("strongest_earthquake_years");///////////////////////
+        // function get_recommendation_earthquake_frequencies(select_countries) {
+        // get(child(firebaseRef, '/number_of_experienced_earthquakes')).then((snapshot) => {
+        let avg_mag_over_time_by_country = null
+        get(child(firebaseRef, '/average_magnitude_over_time_by_country')).then((snapshot) => {
+            avg_mag_over_time_by_country = snapshot.val()
+
+        })
+        selector_years_strongest_earthquake.addEventListener("change", () => {
+            get(child(firebaseRef, '/strongest_earthquake_by_year')).then((snapshot) => {
+                // const country = selector_countries.value;
+
+                let chosenYear = selector_years_strongest_earthquake.value
+                let country = snapshot.val()[chosenYear]['Country']
+                console.log(snapshot.val())
+                document.getElementById("strongest_earthquake_paragraph").innerHTML = `In ${chosenYear},${country} had the strongest earthquake. The average magnitude of earthquakes in ${country} is ${avg_mag_over_time_by_country[country]}`////////////////////
+
+
+            });
+
+        })
+
+        // }
+        // get_recommendation_earthquake_frequencies(selector_countries)
+
+        // function get_recommendation_strongest_earthquake() {
+
+        // }
+
+
+    </script>
+
+
+
+
+
+
+
+</body>
+
+</html>
