@@ -31,3 +31,39 @@ body {
 img {
     border: 5px solid #2be45c;
   }
+
+/*FAILED CODE*/
+body { 
+    font-family: Arial, sans-serif; 
+} 
+ 
+.image-container { 
+    position: relative; 
+    display: inline-block; 
+} 
+ 
+.image-container img { 
+    width: 300px; /* Adjust as needed */ 
+    height: auto; /* Maintain aspect ratio */ 
+} 
+ 
+.hover-text { 
+    position: absolute; 
+    bottom: 20px; /* Position from the bottom */ 
+    left: 20px; /* Position from the left */ 
+    color: white; /* Text color */ 
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */ 
+    padding: 10px; 
+    border-radius: 5px; 
+    opacity: 0; /* Initially hidden */ 
+    transition: opacity 0.3s; /* Smooth transition */ 
+} 
+ 
+.image-container:hover .hover-text { 
+    opacity: 1; /* Show text on hover */ 
+} 
+
+.image-container img {
+    width: 500px;
+    height: 300px;
+}
